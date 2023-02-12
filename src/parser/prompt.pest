@@ -1,0 +1,24 @@
+WHITESPACE = _{ " " | "\t" | NEWLINE }
+
+SEPARATOR = _{ "," | "." }
+
+int = { ("+" | "-")? ~ ASCII_DIGIT+ } // 整数
+num = @{ int ~ ("." ~ ASCII_DIGIT+)? }
+
+word = @{ (ASCII_DIGIT | LETTER | "-" | "_")+ }
+
+argument = { "<" ~ word ~ ( ":" ~ word )* ~ ">" }
+
+single_tag = @{ word ~ (WHITESPACE ~ word)* }
+
+tag_with_bracket = { "(" ~ (single_tag | tag_with_bracket) ~ ")" }
+
+tags = _{ single_tag ~ (SEPARATOR ~ single_tag)* }
+
+
+weight = @{ ":" ~ num }
+bracket = { "(" ~ ( tags | tag_statement)+ ~ weight ?~ ")" }
+tag_statement = { (bracket | single_tag) ~  argument? }
+
+statements = _{ tag_statement* ~ ( SEPARATOR ~ tag_statement? )* ~ ","* }
+result = _{ SOI ~ statements ~ EOI }

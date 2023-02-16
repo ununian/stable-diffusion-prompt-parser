@@ -6,7 +6,9 @@ int = { ("+" | "-")? ~ ASCII_DIGIT+ } // 整数
 num = @{ int ~ ("." ~ ASCII_DIGIT+)? }
 
 keyword_AND = @{ "AND" }
-word = @{ !keyword_AND ~ (ASCII_DIGIT | LETTER | "-" | "_")+ }
+// 这里对于组合emoji还是有点问题，会吞掉后面紧接着的emoji
+emoji = ${ (SYMBOL ~ (OTHER)+ ~ SYMBOL+) | SYMBOL } 
+word = @{ !keyword_AND ~ (emoji | (ASCII_DIGIT | LETTER | "-" | "_")+ ) }
 
 argument = { "<" ~ word ~ ( ":" ~ word )* ~ ">" }
 

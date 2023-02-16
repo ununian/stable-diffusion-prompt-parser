@@ -7,7 +7,7 @@ num = @{ int ~ ("." ~ ASCII_DIGIT+)? }
 
 keyword_AND = @{ "AND" }
 emoji =  ${ (OTHER_SYMBOL ~ VARIATION_SELECTOR? ~ (JOIN_CONTROL ~ OTHER_SYMBOL)+ ~ VARIATION_SELECTOR ~ (JOIN_CONTROL ~ OTHER_SYMBOL)*) | (OTHER_SYMBOL ~ (JOIN_CONTROL ~ OTHER_SYMBOL)+)  | OTHER_SYMBOL } 
-word = @{ !keyword_AND ~ (!SEPARATOR ~ (emoji | (ASCII_DIGIT | LETTER | "-" | "_" | OTHER_PUNCTUATION | MATH_SYMBOL | CURRENCY_SYMBOL))+ ) }
+word = @{ !keyword_AND ~ (!SEPARATOR ~ (emoji | (ASCII_DIGIT | LETTER | "-" | "_" | OTHER_PUNCTUATION | MATH_SYMBOL | CURRENCY_SYMBOL )))+ }
 
 argument = { "<" ~ word ~ ( ":" ~ word )* ~ ">" }
 

@@ -1,6 +1,10 @@
 mod utils;
+pub mod parser;
 
 use wasm_bindgen::prelude::*;
+
+#[macro_use]
+extern crate pest_derive;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.

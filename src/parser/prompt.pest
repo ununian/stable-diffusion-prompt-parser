@@ -5,20 +5,38 @@ SEPARATOR = _{ "," | "." }
 int = { ("+" | "-")? ~ ASCII_DIGIT+ } // 整数
 num = @{ int ~ ("." ~ ASCII_DIGIT+)? }
 
-word = @{ (ASCII_DIGIT | LETTER | "-" | "_")+ }
+keyword_AND = @{ "AND" }
+word = @{ !keyword_AND ~ (ASCII_DIGIT | LETTER | "-" | "_")+ }
 
 argument = { "<" ~ word ~ ( ":" ~ word )* ~ ">" }
 
-single_tag = @{ word ~ (WHITESPACE ~ word)* }
+single_tag = { word ~ (keyword_AND? ~ word)* }
 
-tag_with_bracket = { "(" ~ (single_tag | tag_with_bracket) ~ ")" }
+tags = _{ single_tag ~ (SEPARATOR ~ single_tag)* ~SEPARATOR* }
 
-tags = _{ single_tag ~ (SEPARATOR ~ single_tag)* }
+weight = { ":" ~ num }
 
+bracket_s = { "(" ~ ( tags | tag_statement)+ ~ weight? ~ ")" }
+bracket_m = { "[" ~ ( tags | tag_statement)+ ~ weight? ~ "]" }
+bracket_l = { "{" ~ ( tags | tag_statement)+ ~ weight? ~ "}" }
+bracket = _{ bracket_s | bracket_m | bracket_l }
 
-weight = @{ ":" ~ num }
-bracket = { "(" ~ ( tags | tag_statement)+ ~ weight ?~ ")" }
-tag_statement = { (bracket | single_tag) ~  argument? }
+// --- 高阶语法
 
-statements = _{ tag_statement* ~ ( SEPARATOR ~ tag_statement? )* ~ ","* }
+// 分步解析
+step = @{num}
+from = ${ single_tag }
+to = ${ single_tag }
+higher_order_from_to_step = { from? ~ ":" ~ to? ~ ":" ~ step }
+
+// 融合
+higher_order_mix = { single_tag ~ ( "|" ~ single_tag )+ }
+
+higher_order = { "[" ~ ( higher_order_from_to_step | higher_order_mix ) ~ "]"}
+
+// ---
+
+tag_statement = { higher_order | ((bracket | single_tag) ~  argument?) }
+
+statements = _{ tag_statement* ~ (( SEPARATOR ~ tag_statement? ) | tag_statement)* ~ SEPARATOR* }
 result = _{ SOI ~ statements ~ EOI }

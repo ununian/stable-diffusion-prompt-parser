@@ -8,13 +8,13 @@ pub struct PromptPestParser;
 
 #[derive(Debug, Clone)]
 pub struct ParseResult<'a> {
-    pub tags: Vec<&'a str>,
+    pub pairs: Pairs<'a, Rule>,
 }
 
 impl ParseResult<'_> {
     pub fn parse(input: &str) -> Result<ParseResult, Error<Rule>> {
         match PromptPestParser::parse(Rule::result, input) {
-            Ok(pairs) => Ok(ParseResult { tags: vec![] }),
+            Ok(pairs) => Ok(ParseResult { pairs }),
             Err(e) => Err(e),
         }
     }

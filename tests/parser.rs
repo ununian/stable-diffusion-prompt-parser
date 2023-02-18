@@ -1,6 +1,16 @@
 #[cfg(test)]
 mod parse_calc_tests {
-    use stable_diffusion_prompt_parser::parser::parser::ParseResult;
+    use stable_diffusion_prompt_parser::parser::{cst::PromptCST, parser::ParseResult};
+
+    #[test]
+    fn parse_sample() {
+        let content = "((a)";
+        let result = ParseResult::parse(content);
+        let pairs = result.unwrap().pairs;
+        // println!("{:#?}", pairs);
+        let cst = PromptCST::parse(pairs.clone());
+        println!("{}", serde_json::to_string_pretty(&cst).unwrap());
+    }
 
     #[test]
     fn parse_sample1() {

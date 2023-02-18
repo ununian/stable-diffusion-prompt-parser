@@ -96,7 +96,6 @@ impl PromptCST {
 
                     bracket_level.pop();
 
-
                     cst.push(PromptCST::new(
                         PromptCSTKind::Bracket(bracket_type, BracketLevel(bracket_level.len())),
                         String::from(span.as_str()),
@@ -104,11 +103,18 @@ impl PromptCST {
                         inner,
                         bracket_level,
                     ));
-
                 }
 
                 Rule::single_tag => cst.push(PromptCST::new(
                     PromptCSTKind::SingleTag,
+                    String::from(span.as_str()),
+                    range,
+                    PromptCST::parse_inner(pair.into_inner(), bracket_level),
+                    bracket_level,
+                )),
+
+                Rule::word => cst.push(PromptCST::new(
+                    PromptCSTKind::Word,
                     String::from(span.as_str()),
                     range,
                     PromptCST::parse_inner(pair.into_inner(), bracket_level),
